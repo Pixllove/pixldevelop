@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terms & Conditions – Pixl Develop</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'brand-blue': '#2563eb',
+            'brand-blue-light': '#60a5fa',
+            'brand-bg': '#050508',
+          },
+          fontFamily: {
+            display: ['Space Grotesk', 'sans-serif'],
+            body: ['DM Sans', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --fg: #fff;
+      --fg-muted: rgba(255,255,255,0.65);
+      --accent: #2563eb;
+      --accent-light: #60a5fa;
+    }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background-color: #050508;
+      background-image: radial-gradient(at 32% 18%, rgba(37,99,235,0.1) 0px, transparent 52%),
+                    radial-gradient(at 78% 72%, rgba(15,23,42,0.5) 0px, transparent 50%),
+                    radial-gradient(at 50% 100%, rgba(30,58,138,0.1) 0px, transparent 45%);
+      background-attachment: fixed;
+      color: #fff;
+    }
+    .gradient-text {
+      background-image: linear-gradient(to right, #93c5fd, #60a5fa, #3b82f6, #2563eb);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      background-size: 200% auto;
+      animation: gradientShift 4s ease infinite;
+    }
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+  <section class="relative overflow-hidden pb-6 pt-28 md:pt-32">
+    <div class="pointer-events-none absolute left-1/2 top-1/4 h-[320px] w-[min(100%,480px)] -translate-x-1/2 rounded-full bg-brand-blue/10 blur-[100px]"></div>
+    <div class="container-max mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="mx-auto max-w-3xl text-center">
+        <span class="mb-3 inline-block rounded-full border border-brand-blue/25 bg-brand-blue/[0.08] px-4 py-1.5 font-mono text-xs tracking-[0.2em] text-brand-blue-light">
+          Legal
+        </span>
+        <h1 class="mb-3 font-display text-3xl font-bold text-white sm:text-4xl md:text-5xl">
+          Legal <span class="gradient-text">information</span>
+        </h1>
+        <p class="text-sm text-white/45 sm:text-base">Terms, cookies, and privacy in one place.</p>
+      </div>
+
+      <div class="mx-auto mt-10 flex max-w-3xl flex-wrap justify-center gap-2 border-b border-white/10 pb-4" role="tablist" aria-label="Legal documents">
+        <button type="button" role="tab" aria-selected="true" id="tab-overview-btn" aria-controls="tab-overview"
+          class="rounded-full px-4 py-2 text-sm font-medium transition-colors bg-brand-blue/25 text-white ring-1 ring-brand-blue/40"
+          onclick="switchTab('overview')">
+          Terms of Service
+        </button>
+        <button type="button" role="tab" aria-selected="false" id="tab-details-btn" aria-controls="tab-details"
+          class="rounded-full px-4 py-2 text-sm font-medium transition-colors text-white/45 hover:bg-white/[0.04] hover:text-white/75"
+          onclick="switchTab('details')">
+          Terms EULA
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-t border-white/5 pb-24 pt-10">
+    <div class="container-max mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div id="tab-overview" role="tabpanel" aria-labelledby="tab-overview-btn" class="mx-auto max-w-3xl rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6 sm:p-10">
+        <article class="legal-document max-w-3xl">
+          <p class="whitespace-pre-line text-sm leading-relaxed text-white/65">TERMS OF SERVICE – PixlTrace
+            1. WELCOME
+            Welcome to PixlTrace, our iOS and Android mobile application (the “App”).
+            
+            These Terms of Service (“Terms”) constitute a legally binding agreement between you and us and govern your access to and use of the App and related services (the “Services”).
+            
+            By downloading, accessing, or using PixlTrace, you agree to be bound by these Terms. If you do not agree, you must not use the App.
+            
+            2. ABOUT US
+            PixlTrace is operated by:
+            
+            PixlTrace Development
+            Email: contact@pixl-develop.com
+            
+            (“PixlTrace”, “we”, “us”, or “our”)
+            
+            These Terms were last updated on 10.02.2026 and are the current and valid version.
+            
+            All logos, trademarks, designs, and visual elements of PixlTrace are protected by applicable intellectual property laws.
+            © PixlTrace Development. All rights reserved.
+            
+            Our Privacy Policy, End User License Agreement (EULA), and these Terms apply collectively to your use of the App and form an integral part of this agreement.
+            
+            3. USE OF THE APP
+            PixlTrace is a creative drawing and painting application designed to allow users to create, edit, store, and export digital artworks.
+            
+            You agree to use the App only for lawful purposes and in accordance with these Terms.
+            
+            We reserve the right to:
+            
+            modify, suspend, or discontinue any part of the App or Services at any time;
+            restrict or terminate access to the App where necessary;
+            perform maintenance that may temporarily interrupt availability.
+            We do not guarantee uninterrupted or error-free operation of the App.
+            
+            4. ACCOUNT AND ELIGIBILITY
+            Some features of PixlTrace may require creating an account.
+            
+            By creating an account, you confirm that:
+            
+            you have read and understood these Terms;
+            you are at least 9 years old (or the minimum legal age in your jurisdiction);
+            all information you provide is accurate and up to date.
+            You are responsible for safeguarding your account credentials and for all activity that occurs under your account.
+            
+            You must notify us immediately of any unauthorized access or security breach.
+            
+            We are not liable for any loss or damage resulting from unauthorized access caused by your failure to protect your credentials.
+            
+            5. ACCOUNT SUSPENSION AND TERMINATION
+            We reserve the right, at our sole discretion and without prior notice, to suspend or terminate your account if:
+            
+            you violate these Terms;
+            you misuse the App;
+            your conduct is unlawful or harmful to the App or other users.
+            Upon termination, your right to use the App will immediately cease.
+            
+            Termination does not entitle you to any refund, except where required by applicable law.
+            
+            6. SUBSCRIPTIONS AND IN-APP PURCHASES
+            PixlTrace is free to download. Certain features may require in-app purchases or subscriptions (“Paid Features”).
+            
+            Payments
+            All payments are processed exclusively through the Apple App Store or Google Play Store.
+            We do not collect or store payment information.
+            Prices and available plans are displayed within the App and may vary by region.
+            Auto-Renewal
+            Subscriptions automatically renew unless canceled at least 24 hours before the end of the current billing period.
+            You can manage or cancel subscriptions via your App Store account settings.
+            Deleting the App does not cancel an active subscription.
+            Price Changes
+            We reserve the right to adjust pricing in accordance with App Store rules. Changes apply at the next billing cycle.
+            
+            7. REFUNDS
+            Refunds are handled exclusively by Apple or Google and are subject to their respective policies.
+            
+            We do not have the ability to issue refunds for purchases made through the App Stores.
+            
+            Nothing in these Terms limits your statutory consumer rights under applicable law.
+            
+            8. USER CONTENT
+            All drawings, images, and creative works you create in PixlTrace (“User Content”) remain your property.
+            
+            You grant PixlTrace a limited, non-exclusive license to store and display your User Content solely for the purpose of providing the Services.
+            
+            We do not sell, advertise, or commercially exploit your User Content.
+            
+            You are solely responsible for the content you create and ensure it does not infringe third-party rights or applicable laws.
+            
+            9. PROHIBITED USE
+            You agree not to:
+            
+            use the App for unlawful purposes;
+            upload malicious code or attempt to disrupt the App;
+            reverse-engineer or copy the App;
+            misuse the App in a way that interferes with its normal operation.
+            We may take appropriate action if misuse is detected.
+            
+            10. INTELLECTUAL PROPERTY
+            All intellectual property rights in the App, including software, design, text, graphics, and logos, are owned by PixlTrace or its licensors.
+            
+            These Terms do not grant you ownership rights in the App.
+            
+            11. DISCLAIMER
+            The App is provided on an “as is” and “as available” basis.
+            
+            We make no warranties regarding availability, accuracy, or suitability for a particular purpose.
+            
+            Your use of the App is at your own risk.
+            
+            12. LIMITATION OF LIABILITY
+            To the fullest extent permitted by law, PixlTrace shall not be liable for:
+            
+            indirect or consequential damages;
+            loss of data, profits, or business;
+            service interruptions or data loss.
+            Nothing in these Terms limits liability where such limitation is prohibited by law.
+            
+            13. INDEMNITY
+            You agree to indemnify and hold PixlTrace harmless from any claims, damages, losses, or expenses arising from:
+            
+            your misuse of the App;
+            your violation of these Terms;
+            your infringement of third-party rights.
+            14. TERMINATION OF SERVICE (END OF LIFE)
+            We reserve the right to discontinue the App or Services with reasonable notice.
+            
+            Where applicable, we will comply with legal obligations regarding prepaid subscriptions.
+            
+            15. GOVERNING LAW AND JURISDICTION
+            These Terms are governed by the laws of the United Arab Emirates, unless mandatory local consumer laws provide otherwise.
+            
+            Any disputes shall first be resolved amicably. If unresolved, the courts of Dubai shall have exclusive jurisdiction.
+            
+            16. FINAL PROVISIONS
+            If any provision of these Terms is held invalid, the remaining provisions remain in effect.
+            
+            These Terms constitute the entire agreement between you and PixlTrace regarding use of the App.</p>
+        </article>
+      </div>
+
+      <div id="tab-details" role="tabpanel" aria-labelledby="tab-details-btn" class="hidden mx-auto max-w-3xl rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6 sm:p-10">
+        <article class="legal-document max-w-3xl">
+          <p class="whitespace-pre-line text-sm leading-relaxed text-white/65">Terms and Conditions & End User License Agreement
+            PixlTrace – iOS and Android Mobile Application
+            
+            Welcome to PixlTrace, our iOS and Android mobile application (our “App”). These Terms and Conditions and End User License Agreement (the “Terms”) constitute a legal agreement between you and us governing the use of our App and its underlying functions and detail the rights and restrictions which apply to the use of our technology.
+            
+            We license use of our App to you on the basis of these Terms. We do not sell our App to you, and we remain the owner of our App at all times.
+            
+            ABOUT US
+            PixlTrace is operated by the app owner (“PixlTrace”, “we”, “us”, or “our”).
+            
+            We operate PixlTrace as an iOS and Android mobile application.
+            
+            To contact us, please email contact@pixl-develop.com.
+            
+            These Terms are the current and valid version and may be updated from time to time.
+            
+            The PixlTrace name, logo, marks, emblems, and images are protected by applicable intellectual property laws.
+            All rights reserved.
+            
+            Our Privacy Policy, Terms of Service, and any applicable Community Guidelines form part of these Terms and equally apply to your use of the App.
+            
+            TERMS AND CONDITIONS
+            The provisions set out in these Terms govern your access to and use of our App and its underlying functions and detail the rights and restrictions which apply to the use of our technology. These Terms constitute a legally binding agreement between you and us.
+            
+            We may amend these Terms from time to time. If you do not agree to any amended Terms, you must stop using the App.
+            
+            Subject to your compliance with these Terms, we grant you a revocable, non-exclusive, and non-transferable license to use the App.
+            
+            We reserve the right, at our sole discretion and without notice or liability, to suspend or terminate your access to the App or your account, or to remove or modify any content submitted to the App.
+            
+            We may change, suspend, or discontinue any part of the App or its services at any time. Access to the App may occasionally be interrupted due to maintenance or technical issues.
+            
+            Unless expressly permitted by us in writing, you may not use the App to advertise, promote, or market any third-party products or services.
+            
+            LICENSE GRANT
+            Our App is available exclusively through third-party platforms, including but not limited to the Apple App Store and Google Play Store (each an “App Store”).
+            
+            Your use of the App is also subject to the applicable App Store terms and conditions (“App Store Agreements”). In the event of a conflict, these Terms shall prevail to the extent permitted by law.
+            
+            Provided that you comply with these Terms and the applicable App Store Agreements, we grant you a personal, non-exclusive, non-transferable, non-sublicensable license to:
+            
+            download and install the App on a permitted device; and
+            access and use the App and its content solely for personal and lawful purposes, using only the provided functionality.
+            “Content” includes all text, graphics, interfaces, designs, audio, video, software, and user-generated content made available within the App. We may remove or restrict any content at our discretion.
+            
+            APPLE AND GOOGLE DEVICES LICENSE AGREEMENT
+            If you access the App via Apple or Google platforms:
+            
+            the license is limited to use on devices running the applicable operating system and in accordance with the App Store’s usage rules;
+            we are responsible for maintenance and support of the App, not the App Store provider;
+            you must comply with all applicable third-party terms;
+            Apple and Google are third-party beneficiaries of these Terms and may enforce them where applicable.
+            INTELLECTUAL PROPERTY
+            All App content, excluding user-uploaded content, is owned by or licensed to PixlTrace and protected by applicable national and international intellectual property laws.
+            
+            You may not reproduce, copy, distribute, store, or reuse any App content without our prior written permission.
+            
+            Any intellectual property rights in content uploaded by you remain yours. By uploading content, you grant us a royalty-free, non-exclusive license to use, reproduce, publish, and display such content for operating, improving, and promoting the App.
+            
+            You acknowledge that you have no right to access the App’s source code.
+            
+            NON-EXCLUSIVE LICENSE RESTRICTIONS
+            You may not:
+            
+            copy, modify, or create derivative works of the App;
+            reverse engineer, decompile, or disassemble the App except where permitted by law;
+            rent, sell, sublicense, or transfer the App;
+            remove proprietary notices;
+            interfere with the App’s operation;
+            misuse third-party data.
+            TECHNICAL REQUIREMENTS AND RESPONSIBILITY
+            You are responsible for ensuring that your device meets the technical requirements for using the App, including internet access and compatible hardware and software.
+            
+            We do not guarantee that the App will function on all devices.
+            
+            WARRANTIES
+            The App is provided “as is” and “as available” without warranties of any kind, express or implied, to the fullest extent permitted by law.
+            
+            We do not guarantee uninterrupted, secure, or error-free operation of the App.
+            
+            DATA CHARGES AND MOBILE DEVICES
+            You are responsible for any data, mobile, or internet charges incurred while using the App.
+            
+            LIMITATION OF LIABILITY
+            Your use of the App is at your own risk.
+            We are not liable for indirect, incidental, or consequential damages, including loss of data, profits, or business opportunities, except where liability cannot be excluded by law.
+            
+            Nothing in these Terms limits liability for fraud, willful misconduct, or personal injury caused by negligence.
+            
+            INDEMNITY
+            You agree to indemnify and hold us harmless from any claims, losses, damages, costs, and expenses arising out of your use of the App or violation of these Terms.
+            
+            OTHER IMPORTANT TERMS
+            We may transfer our rights and obligations under these Terms.
+            You may not transfer your rights without our written consent.
+            These Terms constitute the entire agreement between you and us.
+            If any provision is found unenforceable, the remaining provisions remain in full force.
+            These Terms are governed by the laws applicable in the jurisdiction in which the App operator is established.</p>
+        </article>
+      </div>
+
+      <div class="mx-auto mt-12 max-w-3xl text-center">
+        <p class="text-sm text-white/35">
+          Questions? <a href="mailto:contact@pixl-develop.com" class="text-brand-blue-light hover:text-white">contact@pixl-develop.com</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    function switchTab(tab) {
+      const overviewBtn = document.getElementById('tab-overview-btn');
+      const detailsBtn = document.getElementById('tab-details-btn');
+      const overviewPanel = document.getElementById('tab-overview');
+      const detailsPanel = document.getElementById('tab-details');
+
+      if (tab === 'overview') {
+        overviewBtn.setAttribute('aria-selected', 'true');
+        overviewBtn.className = 'rounded-full px-4 py-2 text-sm font-medium transition-colors bg-brand-blue/25 text-white ring-1 ring-brand-blue/40';
+        detailsBtn.setAttribute('aria-selected', 'false');
+        detailsBtn.className = 'rounded-full px-4 py-2 text-sm font-medium transition-colors text-white/45 hover:bg-white/[0.04] hover:text-white/75';
+        overviewPanel.classList.remove('hidden');
+        detailsPanel.classList.add('hidden');
+      } else {
+        overviewBtn.setAttribute('aria-selected', 'false');
+        overviewBtn.className = 'rounded-full px-4 py-2 text-sm font-medium transition-colors text-white/45 hover:bg-white/[0.04] hover:text-white/75';
+        detailsBtn.setAttribute('aria-selected', 'true');
+        detailsBtn.className = 'rounded-full px-4 py-2 text-sm font-medium transition-colors bg-brand-blue/25 text-white ring-1 ring-brand-blue/40';
+        overviewPanel.classList.add('hidden');
+        detailsPanel.classList.remove('hidden');
+      }
+    }
+  </script>
+</body>
+</html>
