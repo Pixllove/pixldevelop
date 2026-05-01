@@ -16,9 +16,13 @@ const FEATURED_ON_HOME = 3
 const ROAD_BG =
   'https://kimi-web-img.moonshot.cn/img/img.freepik.com/63d9b03639f11a65b14c0fc1c269ec3985ec74ac.jpg'
 
-const SCROLL_SPRING   = { stiffness: 50,  damping: 25, restDelta: 0.0003 }
-const CARD_SPRING     = { stiffness: 58,  damping: 34, mass: 0.88, restDelta: 0.0002 }
-const MOBILE_CARD_SPRING = { stiffness: 44, damping: 30, mass: 0.95, restDelta: 0.0002 }
+const SCROLL_SPRING      = { stiffness: 50,  damping: 25, restDelta: 0.0003 }
+const CARD_SPRING        = { stiffness: 58,  damping: 34, mass: 0.88, restDelta: 0.0002 }
+const MOBILE_CARD_SPRING = { stiffness: 44,  damping: 30, mass: 0.95, restDelta: 0.0002 }
+
+// How many px before section top hits viewport top we start the overlay
+// This compensates for the section-header height above the scroll stage
+const EARLY_START_PX = 300
 
 function isIOSDevice() {
   if (typeof navigator === 'undefined') return false
@@ -38,44 +42,47 @@ function getCardDimensions(vw) {
 
 // ─── Single card ──────────────────────────────────────────────────────────────
 function RoadFeaturedCard({ project, index, total, progress, vw, t, language, perfMode }) {
-  const navigate = useNavigate()
-  const cover    = getProjectCoverImage(project.id)
-  const copy     = getLocalizedProjectFields(project, language)
-  const isLeft   = index % 2 === 0
-  const isMobile = vw < 640
+  const navigate    = useNavigate()
+  const cover       = getProjectCoverImage(project.id)
+  const copy        = getLocalizedProjectFields(project, language)
+  const isLeft      = index % 2 === 0
+  const isMobile    = vw < 640
   const skipFilters = perfMode || isMobile
   const { width, height, marginLeft, marginTop } = useMemo(() => getCardDimensions(vw), [vw])
 
   const cardSpring = useSpring(progress, isMobile ? MOBILE_CARD_SPRING : CARD_SPRING)
 
+  // Each card occupies one segment of [0, 1].
+  // raw = 0  →  this card is centred
+  // raw = ±1 →  one card away from centre
   const segSize = 1 / total
   const centre  = (index + 0.5) * segSize
-  const raw  = useTransform(cardSpring, (p) => (p - centre) / segSize)
-  const abs  = useTransform(raw, (r) => Math.min(Math.abs(r), 2.5))
+  const raw     = useTransform(cardSpring, (p) => (p - centre) / segSize)
+  const abs     = useTransform(raw, (r) => Math.min(Math.abs(r), 2.5))
 
-  const xSign  = isLeft ? -1 : 1
-  const xF     = isMobile ? 0.28 : vw < 900 ? 0.34 : 0.4
-  const x      = useTransform(raw, (r) => xSign * r * vw * xF)
-  const y      = useTransform(abs, (a) => a * a * (isMobile ? 16 : 24))
-  const sc     = useTransform(abs, (a) => Math.max(isMobile ? 0.42 : 0.52, 1 - a * 0.36))
-  const ryDeg  = isMobile ? -12 : vw < 900 ? -18 : -26
-  const rotateY = useTransform(raw, (r) => xSign * r * ryDeg)
+  const xSign   = isLeft ? -1 : 1
+  const xF      = isMobile ? 0.28 : vw < 900 ? 0.34 : 0.4
+  const x       = useTransform(raw,  (r) => xSign * r * vw * xF)
+  const y       = useTransform(abs,  (a) => a * a * (isMobile ? 16 : 24))
+  const sc      = useTransform(abs,  (a) => Math.max(isMobile ? 0.42 : 0.52, 1 - a * 0.36))
+  const ryDeg   = isMobile ? -12 : vw < 900 ? -18 : -26
+  const rotateY = useTransform(raw,  (r) => xSign * r * ryDeg)
   const rzDeg   = isMobile ? 0.9 : 1.6
-  const rotateZ = useTransform(raw, (r) => xSign * r * rzDeg)
-  const opacity = useTransform(abs, (a) => Math.max(0.12, 1 - a * 0.72))
-  const blurV   = useTransform(abs, (a) => (skipFilters || a < 0.5 ? 0 : Math.min((a - 0.5) * 9, 16)))
+  const rotateZ = useTransform(raw,  (r) => xSign * r * rzDeg)
+  const opacity = useTransform(abs,  (a) => Math.max(0.12, 1 - a * 0.72))
+  const blurV   = useTransform(abs,  (a) => (skipFilters || a < 0.5 ? 0 : Math.min((a - 0.5) * 9, 16)))
   const filter  = useTransform(blurV, (b) => `blur(${b}px)`)
-  const zIdx    = useTransform(abs, (a) => Math.max(20, Math.round(200 - a * 90)))
+  const zIdx    = useTransform(abs,  (a) => Math.max(20, Math.round(200 - a * 90)))
 
-  const glowOp   = useTransform(abs, (a) => (perfMode ? 0 : a < 0.5 ? 0.9 : 0))
-  const lineOp   = useTransform(abs, (a) => Math.max(0.15, 1 - a * 1.6))
-  const imgSc    = useTransform(abs, (a) => (a < 0.5 ? (isMobile ? 1.025 : 1.06) : 1))
-  const greenBg  = useTransform(abs, (a) => (a < 0.5 ? 'rgba(34,197,94,1)' : 'rgba(34,197,94,0.2)'))
+  const glowOp    = useTransform(abs, (a) => (perfMode ? 0 : a < 0.5 ? 0.9 : 0))
+  const lineOp    = useTransform(abs, (a) => Math.max(0.15, 1 - a * 1.6))
+  const imgSc     = useTransform(abs, (a) => (a < 0.5 ? (isMobile ? 1.025 : 1.06) : 1))
+  const greenBg   = useTransform(abs, (a) => (a < 0.5 ? 'rgba(34,197,94,1)'  : 'rgba(34,197,94,0.2)'))
   const greenGlow = useTransform(abs, (a) =>
     perfMode ? 'none' : a < 0.5 ? '0 0 16px rgba(34,197,94,0.95)' : '0 0 0px transparent')
-  const arrowX   = useTransform(abs, (a) => (a < 0.5 ? 5 : 0))
-  const labelOp  = useTransform(abs, (a) => (a < 0.5 ? 1 : 0.45))
-  const labelX   = useTransform(abs, (a) => (a < 0.5 ? 0 : -4))
+  const arrowX  = useTransform(abs, (a) => (a < 0.5 ? 5 : 0))
+  const labelOp = useTransform(abs, (a) => (a < 0.5 ? 1 : 0.45))
+  const labelX  = useTransform(abs, (a) => (a < 0.5 ? 0 : -4))
 
   return (
     <motion.article
@@ -85,19 +92,14 @@ function RoadFeaturedCard({ project, index, total, progress, vw, t, language, pe
       }}
       tabIndex={0}
       style={{
-        x, y,
-        scale: sc,
-        rotateY, rotateZ, opacity,
+        x, y, scale: sc, rotateY, rotateZ, opacity,
         ...(skipFilters ? {} : { filter }),
         zIndex: zIdx,
         transformStyle: 'preserve-3d',
-        position: 'fixed',          // ← fixed so it's always viewport-centred
+        position: 'fixed',
         left: '50%',
         top: isMobile ? '46%' : '44%',
-        marginLeft,
-        marginTop,
-        width,
-        height,
+        marginLeft, marginTop, width, height,
         maxWidth: 'calc(100vw - 24px)',
         cursor: 'pointer',
         pointerEvents: 'auto',
@@ -191,7 +193,8 @@ function ActiveLabel({ project, language }) {
 function LaneDashes({ left, opacity = 0.22, delay = 0, animate = true }) {
   return (
     <div className="absolute top-0 bottom-0" style={{
-      left, width: left === '50%' ? '2px' : '1px',
+      left,
+      width: left === '50%' ? '2px' : '1px',
       transform: 'translateX(-50%)',
       background: `repeating-linear-gradient(180deg,rgba(255,255,255,${opacity}) 0px,rgba(255,255,255,${opacity}) 36px,transparent 36px,transparent 84px)`,
       animation: animate ? `wdsLaneScroll 1.3s ${delay}s linear infinite` : 'none',
@@ -201,32 +204,36 @@ function LaneDashes({ left, opacity = 0.22, delay = 0, animate = true }) {
 
 // ─── Main stage ───────────────────────────────────────────────────────────────
 function RoadFeaturedStage({ featuredProjects, t, language }) {
-  const outerRef   = useRef(null)   // tall scroll spacer
-  const [vw, setVw] = useState(typeof window !== 'undefined' ? window.innerWidth : 1400)
-  const [isIOS, setIsIOS] = useState(false)
+  const outerRef = useRef(null)
+  const [vw, setVw]         = useState(typeof window !== 'undefined' ? window.innerWidth : 1400)
+  const [isIOS, setIsIOS]   = useState(false)
   const [activeIdx, setActiveIdx] = useState(0)
-  const [isActive, setIsActive]   = useState(false)  // true while section is pinned
+  const [isActive, setIsActive]   = useState(false)
   const activeIdxRef = useRef(0)
 
-  const total     = featuredProjects.length
-  const isMobile  = vw < 640
-  const perfMode  = isMobile && isIOS
+  const total    = featuredProjects.length
+  const isMobile = vw < 640
+  const perfMode = isMobile && isIOS
 
-  // Manual scroll progress motion value — avoids framer's useScroll quirks
   const rawProgress = useMotionValue(0)
   const smooth      = useSpring(rawProgress, SCROLL_SPRING)
 
-  const lastCentre = total > 0 ? (total - 0.5) / total : 1
-  const stageProg  = useTransform(smooth, (v) => Math.min(Math.max(v, 0), lastCentre))
+  // FIX 2: Remove the lastCentre clamp — let progress go all the way to 1.0
+  // so the last card slides fully off-centre before the animation ends.
+  // The card transforms use `abs` clamped to 2.5 so nothing breaks visually.
+  const stageProg = useTransform(smooth, (v) => Math.min(Math.max(v, 0), 1))
 
+  // Progress bar still maps to last-card-centre so it fills gracefully
+  const lastCentre = total > 0 ? (total - 0.5) / total : 1
   const barWidth   = useTransform(stageProg, [0, lastCentre], ['0%', '100%'])
+
   const roadY      = useTransform(smooth, [0, 1], ['0%', '18%'])
   const roadBright = useTransform(smooth, [0, 0.5, 1], [0.36, 0.44, 0.36])
   const roadFilter = useTransform(roadBright, (b) => `brightness(${b}) contrast(1.3) saturate(0.85)`)
 
-  // Watch stageProg to update activeIdx
   useEffect(() => {
     const unsub = stageProg.on('change', (v) => {
+      // Active index based on which card segment we're in (capped at total-1)
       const next = Math.min(total - 1, Math.floor(v * total))
       if (next !== activeIdxRef.current) { activeIdxRef.current = next; setActiveIdx(next) }
     })
@@ -240,49 +247,44 @@ function RoadFeaturedStage({ featuredProjects, t, language }) {
     return () => window.removeEventListener('resize', onResize)
   }, [])
 
-  // Manual scroll handler — calculates progress from section position
   useEffect(() => {
     const handleScroll = () => {
       const el = outerRef.current
       if (!el) return
 
-      const rect    = el.getBoundingClientRect()
-      const elH     = el.offsetHeight
-      const vh      = window.innerHeight
+      const rect      = el.getBoundingClientRect()
+      const elH       = el.offsetHeight
+      const vh        = window.innerHeight
 
-      // How far into the section we've scrolled
-      // 0 = section top just hit viewport top
-      // 1 = section bottom just hit viewport bottom
-      const scrolled = -rect.top
-      const maxScroll = elH - vh
+      // FIX 1: Start EARLY_START_PX before the section top hits the viewport top.
+      // This makes card 1 arrive on screen right as the user starts scrolling
+      // into the section, rather than only after the full header scrolls past.
+      const scrolled  = -rect.top + EARLY_START_PX
+      const maxScroll = elH - vh + EARLY_START_PX
 
       if (scrolled < 0) {
-        // Above section — hide fixed elements
         setIsActive(false)
         rawProgress.set(0)
       } else if (scrolled > maxScroll) {
-        // Below section — hide fixed elements
         setIsActive(false)
         rawProgress.set(1)
       } else {
-        // Inside section — show fixed elements, update progress
         setIsActive(true)
         rawProgress.set(scrolled / maxScroll)
       }
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
-    handleScroll() // run on mount
+    handleScroll()
     return () => window.removeEventListener('scroll', handleScroll)
   }, [rawProgress])
 
   const dots = useMemo(() =>
     featuredProjects.map((_, i) => ({
-      left: total <= 1 ? '0%' : `${(i / (total - 1)) * 100}%`,
+      left:   total <= 1 ? '0%' : `${(i / (total - 1)) * 100}%`,
       active: i <= activeIdx,
     })), [activeIdx, featuredProjects, total])
 
-  // Each card gets 115vh of scroll travel
   const sectionH = `${total * 115}vh`
 
   return (
@@ -294,14 +296,8 @@ function RoadFeaturedStage({ featuredProjects, t, language }) {
         }
       `}</style>
 
-      {/* Tall spacer div — takes up space in document flow */}
       <div ref={outerRef} style={{ height: sectionH, position: 'relative' }}>
 
-        {/*
-          Fixed overlay — only visible while scrolling through this section.
-          Uses `visibility` so it's hidden (not removed) outside the section,
-          which prevents layout jumps and keeps framer springs alive.
-        */}
         <div
           className="fixed inset-0 overflow-hidden"
           style={{
@@ -327,9 +323,9 @@ function RoadFeaturedStage({ featuredProjects, t, language }) {
 
           {/* Lane markings */}
           <div className="pointer-events-none absolute inset-0 overflow-hidden">
-            <LaneDashes left="50%" opacity={perfMode ? 0.14 : 0.2} delay={0} animate={!perfMode} />
-            <LaneDashes left="26%" opacity={0.07} delay={0.3} animate={!perfMode} />
-            <LaneDashes left="74%" opacity={0.07} delay={0.6} animate={!perfMode} />
+            <LaneDashes left="50%"  opacity={perfMode ? 0.14 : 0.2} delay={0}   animate={!perfMode} />
+            <LaneDashes left="26%"  opacity={0.07} delay={0.3} animate={!perfMode} />
+            <LaneDashes left="74%"  opacity={0.07} delay={0.6} animate={!perfMode} />
             {!perfMode && (
               <>
                 <LaneDashes left="10%" opacity={0.04} delay={0.1} />
@@ -341,7 +337,7 @@ function RoadFeaturedStage({ featuredProjects, t, language }) {
             )}
           </div>
 
-          {/* 3-D stage — perspective wrapper, cards are fixed inside */}
+          {/* 3-D card stage */}
           <div className="absolute inset-0"
             style={{ perspective: '2000px', perspectiveOrigin: '50% 43%' }}>
             {featuredProjects.map((project, i) => (
@@ -361,7 +357,6 @@ function RoadFeaturedStage({ featuredProjects, t, language }) {
 
           {/* HUD */}
           <div className="pointer-events-none absolute inset-x-0 bottom-0 flex flex-col items-center gap-3.5 pb-8" style={{ zIndex: 50 }}>
-            {/* Progress bar */}
             <div className="w-full max-w-[340px] px-4">
               <div className="relative h-[2px] rounded-full" style={{ background: 'rgba(255,255,255,0.07)' }}>
                 <motion.div className="absolute inset-y-0 left-0 rounded-full"
@@ -376,7 +371,7 @@ function RoadFeaturedStage({ featuredProjects, t, language }) {
                       left, top: '50%',
                       transform: 'translate(-50%,-50%)',
                       backgroundColor: active ? '#22d3ee' : 'rgba(255,255,255,0.18)',
-                      boxShadow: active ? '0 0 7px rgba(34,211,238,0.85)' : 'none',
+                      boxShadow:       active ? '0 0 7px rgba(34,211,238,0.85)' : 'none',
                     }} />
                 ))}
               </div>
@@ -384,7 +379,6 @@ function RoadFeaturedStage({ featuredProjects, t, language }) {
 
             <ActiveLabel project={featuredProjects[activeIdx]} language={language} />
 
-            {/* Counter pill */}
             <div className={`pointer-events-auto flex items-center gap-3.5 px-5 py-2.5 rounded-full border border-white/[0.08] bg-black/50 ${perfMode ? '' : 'backdrop-blur-2xl'}`}>
               <div className="flex items-center gap-1.5 text-white/35">
                 <motion.svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
@@ -426,7 +420,6 @@ export default function WebDesignShowcase() {
 
   return (
     <section style={{ background: '#030303' }}>
-      {/* Header — always visible, normal flow */}
       <div className="container-max section-padding pb-16">
         <FadeUp className="text-center">
           <span className="inline-block text-xs font-mono text-brand-blue-light tracking-widest uppercase mb-4 px-3 py-1 rounded-full border border-brand-blue/25 bg-brand-blue/5">
@@ -445,10 +438,8 @@ export default function WebDesignShowcase() {
         </FadeUp>
       </div>
 
-      {/* Scroll stage */}
       <RoadFeaturedStage featuredProjects={featuredProjects} t={t} language={language} />
 
-      {/* CTA */}
       <div className="container-max py-12 text-center">
         <FadeUp>
           <Link
