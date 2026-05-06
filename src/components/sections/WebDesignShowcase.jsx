@@ -66,8 +66,8 @@ function RoadFeaturedCard({ project, index, total, progress, vw, t, language, is
   const zIdx    = useTransform(abs, (a) => Math.max(20, Math.round(200 - a * 90)))
 
   // MOBILE PERF: NO rotateY / rotateZ — 3D perspective transforms are GPU killers
-  const rotateY = isMobilePerf ? 0 : useTransform(raw, (r) => xSign * r * (vw < 900 ? -16 : -22))
-  const rotateZ = isMobilePerf ? 0 : useTransform(raw, (r) => xSign * r * (vw < 900 ? 0.7 : 1.3))
+  const rotateY = useTransform(raw, (r) => xSign * r * (vw < 900 ? -16 : -22))
+  const rotateZ = useTransform(raw, (r) => xSign * r * (vw < 900 ? 0.7 : 1.3))
 
   // MOBILE PERF: no blur filter at all — blur = constant GPU compositing
   const desktopFilter = useTransform(abs, (a) =>
@@ -77,7 +77,7 @@ function RoadFeaturedCard({ project, index, total, progress, vw, t, language, is
   const glowOp    = useTransform(abs, (a) => (isMobilePerf ? 0 : a < 0.5 ? 0.85 : 0))
   const lineOp    = useTransform(abs, (a) => Math.max(0.15, 1 - a * 1.5))
   // MOBILE PERF: no img scale animation — saves a GPU layer
-  const imgSc     = isMobilePerf ? 1 : useTransform(abs, (a) => (a < 0.5 ? 1.04 : 1))
+  const imgSc     = useTransform(abs, (a) => (a < 0.5 ? 1.04 : 1))
   const greenBg   = useTransform(abs, (a) => (a < 0.5 ? 'rgba(34,197,94,1)' : 'rgba(34,197,94,0.2)'))
   const greenGlow = useTransform(abs, (a) =>
     isMobilePerf ? 'none' : a < 0.5 ? '0 0 16px rgba(34,197,94,0.95)' : '0 0 0px transparent')
@@ -254,9 +254,9 @@ function RoadFeaturedStage({ featuredProjects, t, language, headerRef }) {
   const roadY      = useTransform(smooth, [0, 1], ['0%', isMobilePerf ? '8%' : '15%'])
   const roadBright = useTransform(smooth, [0, 0.5, 1], [0.38, 0.46, 0.38])
   // Mobile: skip contrast/saturate — cheaper filter
-  const roadFilter = isMobilePerf
-    ? useTransform(roadBright, (b) => `brightness(${b})`)
-    : useTransform(roadBright, (b) => `brightness(${b}) contrast(1.3) saturate(0.85)`)
+  const roadFilter = useTransform(roadBright, (b) =>
+    isMobilePerf ? `brightness(${b})` : `brightness(${b}) contrast(1.3) saturate(0.85)`
+  )
 
   useEffect(() => {
     const unsub = stageProg.on('change', (v) => {
