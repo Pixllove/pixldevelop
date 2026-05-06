@@ -13,15 +13,16 @@ import { getProjectCoverImage } from '@/data/projectCovers'
 import { useI18n } from '@/i18n/LanguageContext'
 
 const FEATURED_ON_HOME = 3
+const STAGE_SCROLL_VH_PER_PROJECT = 80
 const ROAD_BG =
   'https://kimi-web-img.moonshot.cn/img/img.freepik.com/63d9b03639f11a65b14c0fc1c269ec3985ec74ac.jpg'
 
 // Desktop springs — smooth and snappy
-const SCROLL_SPRING      = { stiffness: 80, damping: 20, restDelta: 0.0001 }
-const CARD_SPRING        = { stiffness: 90, damping: 22, mass: 0.6, restDelta: 0.0001 }
+const SCROLL_SPRING = { stiffness: 80, damping: 20, restDelta: 0.0001 }
+const CARD_SPRING = { stiffness: 90, damping: 22, mass: 0.6, restDelta: 0.0001 }
 // Mobile springs — slightly more damped so GPU has less to do per frame
 const MOBILE_SCROLL_SPRING = { stiffness: 60, damping: 22, restDelta: 0.0005 }
-const MOBILE_CARD_SPRING   = { stiffness: 65, damping: 24, mass: 0.7, restDelta: 0.0005 }
+const MOBILE_CARD_SPRING = { stiffness: 65, damping: 24, mass: 0.7, restDelta: 0.0005 }
 
 function isIOSDevice() {
   if (typeof navigator === 'undefined') return false
@@ -32,38 +33,38 @@ function isIOSDevice() {
 }
 
 function getCardDimensions(vw) {
-  const pad  = vw < 380 ? 14 : vw < 640 ? 18 : 28
+  const pad = vw < 380 ? 14 : vw < 640 ? 18 : 28
   const maxW = Math.min(620, vw - pad * 2)
-  const w    = Math.max(260, maxW)
-  const h    = Math.round(w * (392 / 620))
+  const w = Math.max(260, maxW)
+  const h = Math.round(w * (392 / 620))
   return { width: w, height: h, marginLeft: -w / 2, marginTop: -h / 2 }
 }
 
 // ─── Single card ──────────────────────────────────────────────────────────────
 function RoadFeaturedCard({ project, index, total, progress, vw, t, language, isMobilePerf }) {
   const navigate = useNavigate()
-  const cover    = getProjectCoverImage(project.id)
-  const copy     = getLocalizedProjectFields(project, language)
-  const isLeft   = index % 2 === 0
+  const cover = getProjectCoverImage(project.id)
+  const copy = getLocalizedProjectFields(project, language)
+  const isLeft = index % 2 === 0
   const isMobile = vw < 900   // treat tablets as mobile too for perf
   const { width, height, marginLeft, marginTop } = useMemo(() => getCardDimensions(vw), [vw])
 
   const spring = useSpring(progress, isMobilePerf ? MOBILE_CARD_SPRING : CARD_SPRING)
 
   const segSize = 1 / total
-  const centre  = (index + 0.5) * segSize
-  const raw     = useTransform(spring, (p) => (p - centre) / segSize)
-  const abs     = useTransform(raw,   (r) => Math.min(Math.abs(r), 2.5))
+  const centre = (index + 0.5) * segSize
+  const raw = useTransform(spring, (p) => (p - centre) / segSize)
+  const abs = useTransform(raw, (r) => Math.min(Math.abs(r), 2.5))
 
   const xSign = isLeft ? -1 : 1
   // Mobile: reduce lateral spread so GPU composites less area
-  const xF    = isMobilePerf ? 0.22 : isMobile ? 0.28 : 0.4
+  const xF = isMobilePerf ? 0.22 : isMobile ? 0.28 : 0.4
 
-  const x       = useTransform(raw, (r) => xSign * r * vw * xF)
-  const y       = useTransform(abs, (a) => a * a * (isMobilePerf ? 10 : 20))
-  const sc      = useTransform(abs, (a) => Math.max(isMobilePerf ? 0.55 : 0.52, 1 - a * (isMobilePerf ? 0.28 : 0.34)))
+  const x = useTransform(raw, (r) => xSign * r * vw * xF)
+  const y = useTransform(abs, (a) => a * a * (isMobilePerf ? 10 : 20))
+  const sc = useTransform(abs, (a) => Math.max(isMobilePerf ? 0.55 : 0.52, 1 - a * (isMobilePerf ? 0.28 : 0.34)))
   const opacity = useTransform(abs, (a) => Math.max(isMobilePerf ? 0.25 : 0.15, 1 - a * (isMobilePerf ? 0.55 : 0.68)))
-  const zIdx    = useTransform(abs, (a) => Math.max(20, Math.round(200 - a * 90)))
+  const zIdx = useTransform(abs, (a) => Math.max(20, Math.round(200 - a * 90)))
 
   // MOBILE PERF: NO rotateY / rotateZ — 3D perspective transforms are GPU killers
   const rotateY = useTransform(raw, (r) => xSign * r * (vw < 900 ? -16 : -22))
@@ -74,16 +75,16 @@ function RoadFeaturedCard({ project, index, total, progress, vw, t, language, is
     a < 0.6 ? 'blur(0px)' : `blur(${Math.min((a - 0.6) * 8, 12)}px)`
   )
 
-  const glowOp    = useTransform(abs, (a) => (isMobilePerf ? 0 : a < 0.5 ? 0.85 : 0))
-  const lineOp    = useTransform(abs, (a) => Math.max(0.15, 1 - a * 1.5))
+  const glowOp = useTransform(abs, (a) => (isMobilePerf ? 0 : a < 0.5 ? 0.85 : 0))
+  const lineOp = useTransform(abs, (a) => Math.max(0.15, 1 - a * 1.5))
   // MOBILE PERF: no img scale animation — saves a GPU layer
-  const imgSc     = useTransform(abs, (a) => (a < 0.5 ? 1.04 : 1))
-  const greenBg   = useTransform(abs, (a) => (a < 0.5 ? 'rgba(34,197,94,1)' : 'rgba(34,197,94,0.2)'))
+  const imgSc = useTransform(abs, (a) => (a < 0.5 ? 1.04 : 1))
+  const greenBg = useTransform(abs, (a) => (a < 0.5 ? 'rgba(34,197,94,1)' : 'rgba(34,197,94,0.2)'))
   const greenGlow = useTransform(abs, (a) =>
     isMobilePerf ? 'none' : a < 0.5 ? '0 0 16px rgba(34,197,94,0.95)' : '0 0 0px transparent')
-  const arrowX  = useTransform(abs, (a) => (a < 0.5 ? 5 : 0))
+  const arrowX = useTransform(abs, (a) => (a < 0.5 ? 5 : 0))
   const labelOp = useTransform(abs, (a) => (a < 0.5 ? 1 : 0.45))
-  const labelX  = useTransform(abs, (a) => (a < 0.5 ? 0 : -4))
+  const labelX = useTransform(abs, (a) => (a < 0.5 ? 0 : -4))
 
   return (
     <motion.article
@@ -114,12 +115,11 @@ function RoadFeaturedCard({ project, index, total, progress, vw, t, language, is
         willChange: isMobilePerf ? 'transform' : 'transform, opacity',
         backfaceVisibility: 'hidden',
       }}
-      className={`overflow-hidden rounded-[28px] border border-white/[0.11] ${
-        isMobilePerf
+      className={`overflow-hidden rounded-[28px] border border-white/[0.11] ${isMobilePerf
           // Mobile: simple shadow + solid bg — NO backdrop-blur (very expensive)
           ? 'shadow-[0_8px_32px_rgba(0,0,0,0.85)] bg-[#0c1120]'
           : 'shadow-[0_48px_96px_-16px_rgba(0,0,0,0.95)] backdrop-blur-2xl bg-gradient-to-b from-white/[0.08] to-transparent'
-      }`}
+        }`}
     >
       {/* Glow ring — desktop only */}
       {!isMobilePerf && (
@@ -139,10 +139,10 @@ function RoadFeaturedCard({ project, index, total, progress, vw, t, language, is
             isMobilePerf
               // Mobile: plain img tag — no motion wrapper = no extra layer
               ? <img src={cover} alt={`${copy.title} preview`}
-                  className="absolute inset-0 h-full w-full object-cover object-center" />
+                className="absolute inset-0 h-full w-full object-cover object-center" />
               : <motion.img src={cover} alt={`${copy.title} preview`}
-                  className="absolute inset-0 h-full w-full object-cover object-center"
-                  style={{ scale: imgSc }} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }} />
+                className="absolute inset-0 h-full w-full object-cover object-center"
+                style={{ scale: imgSc }} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }} />
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/30 to-transparent" />
 
@@ -228,13 +228,13 @@ function LaneDashes({ left, opacity = 0.22, delay = 0, animate = true }) {
 
 // ─── Main stage ───────────────────────────────────────────────────────────────
 function RoadFeaturedStage({ featuredProjects, t, language, headerRef }) {
-  const outerRef              = useRef(null)
-  const rafRef                = useRef(null)
-  const [vw, setVw]           = useState(typeof window !== 'undefined' ? window.innerWidth : 1400)
-  const [isIOS, setIsIOS]     = useState(false)
+  const outerRef = useRef(null)
+  const rafRef = useRef(null)
+  const [vw, setVw] = useState(typeof window !== 'undefined' ? window.innerWidth : 1400)
+  const [isIOS, setIsIOS] = useState(false)
   const [activeIdx, setActiveIdx] = useState(0)
-  const [isActive, setIsActive]   = useState(false)
-  const activeIdxRef          = useRef(0)
+  const [isActive, setIsActive] = useState(false)
+  const activeIdxRef = useRef(0)
 
   const total = featuredProjects.length
 
@@ -245,13 +245,13 @@ function RoadFeaturedStage({ featuredProjects, t, language, headerRef }) {
   const scrollSpring = isMobilePerf ? MOBILE_SCROLL_SPRING : SCROLL_SPRING
 
   const rawProgress = useMotionValue(0)
-  const smooth      = useSpring(rawProgress, scrollSpring)
-  const stageProg   = useTransform(smooth, (v) => Math.min(Math.max(v, 0), 1))
+  const smooth = useSpring(rawProgress, scrollSpring)
+  const stageProg = useTransform(smooth, (v) => Math.min(Math.max(v, 0), 1))
 
   const lastCentre = total > 0 ? (total - 0.5) / total : 1
-  const barWidth   = useTransform(stageProg, [0, lastCentre], ['0%', '100%'])
+  const barWidth = useTransform(stageProg, [0, lastCentre], ['0%', '100%'])
 
-  const roadY      = useTransform(smooth, [0, 1], ['0%', isMobilePerf ? '8%' : '15%'])
+  const roadY = useTransform(smooth, [0, 1], ['0%', isMobilePerf ? '8%' : '15%'])
   const roadBright = useTransform(smooth, [0, 0.5, 1], [0.38, 0.46, 0.38])
   // Mobile: skip contrast/saturate — cheaper filter
   const roadFilter = useTransform(roadBright, (b) =>
@@ -278,19 +278,19 @@ function RoadFeaturedStage({ featuredProjects, t, language, headerRef }) {
     // This prevents the scroll handler from firing on every single scroll event
     // (browsers fire scroll at 60-120hz — RAF caps it at display refresh rate)
     const compute = () => {
-      const el     = outerRef.current
+      const el = outerRef.current
       const header = headerRef?.current
       if (!el) return
 
-      const rect   = el.getBoundingClientRect()
-      const elH    = el.offsetHeight
-      const vh     = window.innerHeight
+      const rect = el.getBoundingClientRect()
+      const elH = el.offsetHeight
+      const vh = window.innerHeight
 
-      const headerH    = header ? header.offsetHeight : 300
-      const earlyStart = headerH * 0.3
-      const earlyEnd   = vh * 0.15
+      const headerH = header ? header.offsetHeight : 300
+      const earlyStart = Math.min(vh * 0.58, headerH + vh * 0.18)
+      const earlyEnd = -vh * 0.5
 
-      const scrolled  = -rect.top + earlyStart
+      const scrolled = -rect.top + earlyStart
       const maxScroll = elH - vh + earlyStart - earlyEnd
 
       if (scrolled < 0) {
@@ -322,11 +322,11 @@ function RoadFeaturedStage({ featuredProjects, t, language, headerRef }) {
 
   const dots = useMemo(() =>
     featuredProjects.map((_, i) => ({
-      left:   total <= 1 ? '0%' : `${(i / (total - 1)) * 100}%`,
+      left: total <= 1 ? '0%' : `${(i / (total - 1)) * 100}%`,
       active: i <= activeIdx,
     })), [activeIdx, featuredProjects, total])
 
-  const sectionH = `${total * 100}vh`
+  const sectionH = `${Math.max(total * STAGE_SCROLL_VH_PER_PROJECT, 200)}vh`
 
   return (
     <>
@@ -400,9 +400,11 @@ function RoadFeaturedStage({ featuredProjects, t, language, headerRef }) {
                   style={{ width: barWidth, background: 'linear-gradient(90deg,#2563eb,#06b6d4,#2563eb)', boxShadow: '0 0 8px rgba(6,182,212,0.5)' }} />
                 {dots.map(({ left, active }, i) => (
                   <div key={i} className="absolute h-[7px] w-[7px] rounded-full transition-colors duration-300"
-                    style={{ left, top: '50%', transform: 'translate(-50%,-50%)',
+                    style={{
+                      left, top: '50%', transform: 'translate(-50%,-50%)',
                       backgroundColor: active ? '#22d3ee' : 'rgba(255,255,255,0.18)',
-                      boxShadow: active ? '0 0 6px rgba(34,211,238,0.8)' : 'none' }} />
+                      boxShadow: active ? '0 0 6px rgba(34,211,238,0.8)' : 'none'
+                    }} />
                 ))}
               </div>
             </div>
@@ -410,9 +412,8 @@ function RoadFeaturedStage({ featuredProjects, t, language, headerRef }) {
             <ActiveLabel project={featuredProjects[activeIdx]} language={language} />
 
             {/* Counter pill — mobile: no backdrop-blur */}
-            <div className={`pointer-events-auto flex items-center gap-3 px-4 py-2 rounded-full border border-white/[0.08] ${
-              isMobilePerf ? 'bg-black/80' : 'bg-black/50 backdrop-blur-2xl'
-            }`}>
+            <div className={`pointer-events-auto flex items-center gap-3 px-4 py-2 rounded-full border border-white/[0.08] ${isMobilePerf ? 'bg-black/80' : 'bg-black/50 backdrop-blur-2xl'
+              }`}>
               <div className="flex items-center gap-1.5 text-white/35">
                 <motion.svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                   animate={{ y: [0, 3, 0] }} transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}>
@@ -448,13 +449,13 @@ function RoadFeaturedStage({ featuredProjects, t, language, headerRef }) {
 
 // ─── Export ───────────────────────────────────────────────────────────────────
 export default function WebDesignShowcase() {
-  const { t, language }  = useI18n()
+  const { t, language } = useI18n()
   const featuredProjects = projects.slice(0, FEATURED_ON_HOME)
-  const headerRef        = useRef(null)
+  const headerRef = useRef(null)
 
   return (
     <section style={{ background: '#030303' }}>
-      <div ref={headerRef} className="container-max section-padding pb-16">
+      <div ref={headerRef} className="container-max px-4 pb-8 pt-20 sm:px-6 sm:pb-10 sm:pt-24 lg:px-8">
         <FadeUp className="text-center">
           <span className="inline-block text-xs font-mono text-brand-blue-light tracking-widest uppercase mb-4 px-3 py-1 rounded-full border border-brand-blue/25 bg-brand-blue/5">
             {t('Featured Projects', 'Ausgewählte Projekte')}
@@ -479,7 +480,7 @@ export default function WebDesignShowcase() {
         headerRef={headerRef}
       />
 
-      <div className="container-max py-12 text-center">
+      <div className="container-max pb-10 pt-4 text-center">
         <FadeUp>
           <Link
             to="/projects"
