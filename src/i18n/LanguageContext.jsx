@@ -5,11 +5,27 @@ const LanguageContext = createContext(null)
 const SUPPORTED_LANGUAGES = ['en', 'de']
 const STORAGE_KEY = 'pixl-language'
 
+function getBrowserLocales() {
+  if (typeof navigator === 'undefined') return []
+  return Array.isArray(navigator.languages) && navigator.languages.length
+    ? navigator.languages
+    : [navigator.language].filter(Boolean)
+}
+
+function shouldDefaultToGerman() {
+  const locales = getBrowserLocales().map((locale) => locale.toLowerCase())
+  const hasGermanLocale = locales.some((locale) => locale === 'de' || locale.startsWith('de-'))
+  const hasGermanyRegion = locales.some((locale) => /[-_]de\b/.test(locale))
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+
+  return hasGermanLocale || hasGermanyRegion || timeZone === 'Europe/Berlin'
+}
+
 function getInitialLanguage() {
   if (typeof window === 'undefined') return 'en'
   const stored = window.localStorage.getItem(STORAGE_KEY)
   if (SUPPORTED_LANGUAGES.includes(stored)) return stored
-  return 'en'
+  return shouldDefaultToGerman() ? 'de' : 'en'
 }
 
 export function LanguageProvider({ children }) {

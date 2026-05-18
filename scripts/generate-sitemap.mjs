@@ -1,10 +1,11 @@
-// Simple dynamic sitemap generator
-// - Scans content/blog for blog slugs -> /blog/{slug}
-// - Scans content/projects for project slugs -> /projects/{slug}
-// - Always includes main static pages
+// Generates sitemap.xml from the routes and data used by the Vite app.
+// Vite copies files from public/ into dist/, so the canonical build artifact is
+// public/sitemap.xml. A root copy is also written for local/source visibility.
 
-import { readdirSync, statSync, existsSync, writeFileSync } from 'fs'
+import { mkdirSync, writeFileSync } from 'fs'
 import { join } from 'path'
+import { blogPosts } from '../src/data/blogPosts.js'
+import { projects } from '../src/data/projects.js'
 
 const baseUrl = 'https://pixl-develop.com'
 const root = process.cwd()
@@ -19,69 +20,54 @@ const staticPages = [
   '/jobs',
   '/projects',
   '/blog',
+  '/terms-app-PixlTrace',
+  '/privacy-policy-pixltrace/',
 ]
 
-function isDir(p) {
-  try {
-    return statSync(p).isDirectory()
-  } catch (e) {
-    return false
-  }
+function normalizePath(path) {
+  if (path === '/') return '/'
+  return `/${path.replace(/^\/+|\/+$/g, '')}`
 }
 
-function slugFromFilename(name) {
-  const base = name.split('/').pop()
-  const dot = base.lastIndexOf('.')
-  return dot > 0 ? base.substring(0, dot) : base
+function absoluteUrl(path) {
+  const normalized = normalizePath(path)
+  return `${baseUrl}${normalized === '/' ? '' : normalized}`
 }
 
-const urls = []
-
-// Add static pages
-for (const p of staticPages) {
-  urls.push(`${baseUrl}${p}`)
+function xmlEscape(value) {
+  return value
+    .replaceAll('&', '&amp;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&apos;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
 }
 
-// Blog posts generation
-const blogDir = join(root, 'content', 'blog')
-if (existsSync(blogDir) && isDir(blogDir)) {
-  for (const f of readdirSync(blogDir)) {
-    // Map files to /blog/{slug}; skip directories
-    const full = join(blogDir, f)
-    try {
-      if (statSync(full).isFile()) {
-        const slug = slugFromFilename(f)
-        urls.push(`${baseUrl}/blog/${slug}`)
-      }
-    } catch (e) {
-      // ignore
-    }
-  }
-}
+const routes = [
+  ...staticPages,
+  ...projects.map((project) => `/projects/${project.id}`),
+  ...blogPosts.map((post) => `/blog/${post.slug}`),
+]
 
-// Projects generation
-const projectsDir = join(root, 'content', 'projects')
-if (existsSync(projectsDir) && isDir(projectsDir)) {
-  for (const f of readdirSync(projectsDir)) {
-    const full = join(projectsDir, f)
-    try {
-      if (statSync(full).isFile()) {
-        const slug = slugFromFilename(f)
-        urls.push(`${baseUrl}/projects/${slug}`)
-      }
-    } catch (e) {
-      // ignore
-    }
-  }
-}
+const urls = Array.from(new Set(routes.map(absoluteUrl)))
 
 // Build XML
 const now = new Date().toISOString().slice(0, 10)
-const items = urls.map(u => `  <url><loc>${u}</loc><lastmod>${now}</lastmod></url>`).join('\n')
+const items = urls
+  .map((url) => [
+    '  <url>',
+    `    <loc>${xmlEscape(url)}</loc>`,
+    `    <lastmod>${now}</lastmod>`,
+    '  </url>',
+  ].join('\n'))
+  .join('\n')
 const markup = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${items}
 </urlset>
 `
-writeFileSync('sitemap.xml', markup, 'utf8')
+
+mkdirSync(join(root, 'public'), { recursive: true })
+writeFileSync(join(root, 'public', 'sitemap.xml'), markup, 'utf8')
+writeFileSync(join(root, 'sitemap.xml'), markup, 'utf8')
 console.log('sitemap.xml generated with', urls.length, 'urls')
