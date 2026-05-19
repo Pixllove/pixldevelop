@@ -14,11 +14,10 @@ import { projects } from '@/data/projects'
 import { getProjectCoverImage } from '@/data/projectCovers'
 
 const wordReveal = {
-  hidden: { opacity: 0, y: 36, filter: 'blur(14px)' },
+  hidden: { opacity: 0, y: 30 },
   show: {
     opacity: 1,
     y: 0,
-    filter: 'blur(0px)',
     transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
   },
 }
@@ -148,10 +147,28 @@ function HeroTechLines({ reduceMotion }) {
   )
 }
 
+function useMediaQuery(query) {
+  const [matches, setMatches] = useState(() =>
+    typeof window === 'undefined' ? false : window.matchMedia(query).matches,
+  )
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const media = window.matchMedia(query)
+    const handleChange = () => setMatches(media.matches)
+    handleChange()
+    media.addEventListener('change', handleChange)
+    return () => media.removeEventListener('change', handleChange)
+  }, [query])
+
+  return matches
+}
+
 export default function Hero() {
   const { t } = useI18n()
   const sectionRef = useRef(null)
   const reduceMotion = useReducedMotion()
+  const showDesktopVisual = useMediaQuery('(min-width: 1024px)')
   const [activePreview, setActivePreview] = useState(0)
 
   const previewSlides = useMemo(
@@ -168,12 +185,12 @@ export default function Hero() {
   )
 
   useEffect(() => {
-    if (reduceMotion || previewSlides.length <= 1) return
+    if (!showDesktopVisual || reduceMotion || previewSlides.length <= 1) return
     const interval = window.setInterval(() => {
       setActivePreview((prev) => (prev + 1) % previewSlides.length)
     }, 2600)
     return () => window.clearInterval(interval)
-  }, [previewSlides.length, reduceMotion])
+  }, [previewSlides.length, reduceMotion, showDesktopVisual])
 
   const mouseX = useMotionValue(-500)
   const mouseY = useMotionValue(-500)
@@ -234,14 +251,14 @@ export default function Hero() {
       <div className="pointer-events-none absolute bottom-0 left-1/2 h-[45vh] w-[120%] -translate-x-1/2 bg-[radial-gradient(ellipse_at_center,rgba(30,58,138,0.12),transparent_70%)]" />
 
       {/* Mouse-follow spotlight (IT / product feel) */}
-      {!reduceMotion && (
+      {!reduceMotion && showDesktopVisual && (
         <motion.div aria-hidden className="pointer-events-none absolute inset-0 z-[1]" style={{ background: spotlight }} />
       )}
 
-      <HeroTechLines reduceMotion={reduceMotion} />
+      {showDesktopVisual && <HeroTechLines reduceMotion={reduceMotion} />}
 
       {/* Moving scan */}
-      {!reduceMotion && (
+      {!reduceMotion && showDesktopVisual && (
         <div
           aria-hidden
           className="hero-scan-line pointer-events-none absolute left-0 right-0 z-[2] h-px bg-gradient-to-r from-transparent via-brand-blue-light/45 to-transparent shadow-[0_0_24px_rgba(96,165,250,0.35)]"
@@ -249,25 +266,33 @@ export default function Hero() {
       )}
 
       {/* Orbs */}
-      <div className="pointer-events-none absolute top-1/4 left-1/4 h-[520px] w-[520px] rounded-full bg-brand-blue/14 blur-[130px] animate-orb" />
-      <div className="pointer-events-none absolute bottom-1/4 right-1/4 h-[420px] w-[420px] rounded-full bg-indigo-950/80 blur-[120px] animate-orb-reverse" />
-      <div className="pointer-events-none absolute left-1/2 top-1/2 h-[340px] w-[340px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-accent/10 blur-[90px]" />
+      {showDesktopVisual ? (
+        <>
+          <div className="pointer-events-none absolute top-1/4 left-1/4 h-[520px] w-[520px] rounded-full bg-brand-blue/14 blur-[130px] animate-orb" />
+          <div className="pointer-events-none absolute bottom-1/4 right-1/4 h-[420px] w-[420px] rounded-full bg-indigo-950/80 blur-[120px] animate-orb-reverse" />
+          <div className="pointer-events-none absolute left-1/2 top-1/2 h-[340px] w-[340px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-accent/10 blur-[90px]" />
+        </>
+      ) : (
+        <div className="pointer-events-none absolute inset-x-[-20%] top-16 h-[360px] rounded-full bg-brand-blue/12 blur-[80px]" />
+      )}
 
       {/* Grid parallax layer (subtle, no scroll-bound text) */}
-      <motion.div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10 opacity-[0.65]"
-        animate={reduceMotion ? {} : { backgroundPosition: ['0px 0px', '50px 50px'] }}
-        transition={{ duration: 24, repeat: Infinity, ease: 'linear' }}
-        style={{
-          backgroundImage:
-            'linear-gradient(rgba(59,130,246,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(148,163,184,0.06) 1px, transparent 1px)',
-          backgroundSize: '50px 50px',
-        }}
-      />
+      {showDesktopVisual && (
+        <motion.div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 -z-10 opacity-[0.65]"
+          animate={reduceMotion ? {} : { backgroundPosition: ['0px 0px', '50px 50px'] }}
+          transition={{ duration: 24, repeat: Infinity, ease: 'linear' }}
+          style={{
+            backgroundImage:
+              'linear-gradient(rgba(59,130,246,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(148,163,184,0.06) 1px, transparent 1px)',
+            backgroundSize: '50px 50px',
+          }}
+        />
+      )}
 
       {/* Spark dots */}
-      {[...Array(14)].map((_, i) => (
+      {showDesktopVisual && [...Array(14)].map((_, i) => (
         <motion.div
           key={i}
           className="pointer-events-none absolute h-1 w-1 rounded-full bg-brand-blue-light/50 shadow-[0_0_12px_rgba(96,165,250,0.6)]"
@@ -394,11 +419,11 @@ export default function Hero() {
           </div>
 
           {/* Visual hub */}
-          <motion.div
+          {showDesktopVisual && <motion.div
             initial={{ opacity: 0, scale: 0.92, rotateY: -8 }}
             animate={{ opacity: 1, scale: 1, rotateY: 0 }}
             transition={{ duration: 1, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="relative hidden items-center justify-center lg:-mt-10 lg:flex"
+            className="relative items-center justify-center lg:-mt-10 lg:flex"
             style={{ perspective: '1200px' }}
           >
             <motion.div
@@ -434,6 +459,10 @@ export default function Hero() {
                         key={slide.id}
                         src={slide.image}
                         alt={slide.title}
+                        width={288}
+                        height={128}
+                        loading={idx === 0 ? 'eager' : 'lazy'}
+                        decoding="async"
                         className="absolute inset-0 h-full w-full object-cover"
                         animate={idx === activePreview ? { opacity: 1, scale: 1.03 } : { opacity: 0, scale: 1 }}
                         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
@@ -489,7 +518,7 @@ export default function Hero() {
                 </motion.span>
               </motion.div>
             ))}
-          </motion.div>
+          </motion.div>}
         </div>
       </div>
 

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import logoImg from '../../../images/testnew.png'
+import logoImg from '../../../images/optimized/logo.png'
 import { useI18n } from '@/i18n/LanguageContext'
 
 const socialLinks = [
@@ -95,6 +95,9 @@ export default function Footer() {
               <img
                 src={logoImg}
                 alt="Pixl Develop"
+                width={520}
+                height={204}
+                loading="lazy"
                 className="h-9 w-auto max-w-[min(70vw,200px)] sm:h-10 sm:max-w-[220px] object-contain object-left transition-opacity group-hover:opacity-90"
                 decoding="async"
               />

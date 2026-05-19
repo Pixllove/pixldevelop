@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import logoImg from '../../../images/testnew.png'
+import logoImg from '../../../images/optimized/logo.png'
 import { useI18n, useLanguage } from '@/i18n/LanguageContext'
 
 const navLinks = [
@@ -90,6 +90,8 @@ export default function Navbar() {
                 <img
                   src={logoImg}
                   alt="Pixl Develop"
+                  width={520}
+                  height={204}
                   className="h-10 w-auto max-w-[min(52vw,200px)] sm:h-11 sm:max-w-[220px] md:h-12 md:max-w-[260px] object-contain object-left transition-opacity group-hover:opacity-90"
                   decoding="async"
                 />

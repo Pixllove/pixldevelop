@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { FadeUp } from '@/components/ui/AnimatedSection'
 import { useI18n } from '@/i18n/LanguageContext'
-import logoImg from '../../../images/testnew.png'
+import logoImg from '../../../images/optimized/logo.png'
 
 /** 3D-style book: float + cover opens to show inner “Storybrand Secret Report” */
 function StorybrandBookMockup() {
@@ -65,6 +65,10 @@ function StorybrandBookMockup() {
                 <img
                   src={logoImg}
                   alt=""
+                  width={520}
+                  height={204}
+                  loading="lazy"
+                  decoding="async"
                   className="h-[2.35rem] w-[2.35rem] object-contain drop-shadow-[0_1px_3px_rgba(0,0,0,0.2)] sm:h-[2.85rem] sm:w-[2.85rem]"
                 />
               </div>

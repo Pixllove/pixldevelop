@@ -1,13 +1,15 @@
 import { Helmet } from 'react-helmet-async'
+import { lazy, Suspense } from 'react'
 import Hero from '@/components/sections/Hero'
-import Services from '@/components/sections/Services'
 import Process from '@/components/sections/Process'
-import WebDesignShowcase from '@/components/sections/WebDesignShowcase'
-import Storybrand from '@/components/sections/Storybrand'
-import FreeReport from '@/components/sections/FreeReport'
-import Testimonials from '@/components/sections/Testimonials'
-import CalendlyBookingSection from '@/components/sections/CalendlyBookingSection'
 import { useI18n } from '@/i18n/LanguageContext'
+
+const WebDesignShowcase = lazy(() => import('@/components/sections/WebDesignShowcase'))
+const Services = lazy(() => import('@/components/sections/Services'))
+const Storybrand = lazy(() => import('@/components/sections/Storybrand'))
+const FreeReport = lazy(() => import('@/components/sections/FreeReport'))
+const Testimonials = lazy(() => import('@/components/sections/Testimonials'))
+const CalendlyBookingSection = lazy(() => import('@/components/sections/CalendlyBookingSection'))
 
 export default function Home() {
   const { t } = useI18n()
@@ -28,12 +30,14 @@ export default function Home() {
 
       <Hero />
       <Process />
-      <WebDesignShowcase />
-      <Services />
-      <Storybrand />
-      <FreeReport />
-      <Testimonials />
-      <CalendlyBookingSection />
+      <Suspense fallback={null}>
+        <WebDesignShowcase />
+        <Services />
+        <Storybrand />
+        <FreeReport />
+        <Testimonials />
+        <CalendlyBookingSection />
+      </Suspense>
     </>
   )
 }

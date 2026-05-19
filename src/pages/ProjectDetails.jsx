@@ -47,6 +47,9 @@ export default function ProjectDetails() {
                 <img
                   src={cover}
                   alt={`${copy.title} preview`}
+                  width={900}
+                  height={506}
+                  decoding="async"
                   className="absolute inset-0 w-full h-full object-cover object-center"
                 />
               )}
@@ -112,6 +115,10 @@ export default function ProjectDetails() {
                           <img
                             src={itemCover}
                             alt={`${itemCopy.title} preview`}
+                            width={900}
+                            height={506}
+                            loading="lazy"
+                            decoding="async"
                             className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
                           />
                         )}

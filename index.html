@@ -1,35 +1,53 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <!-- Start cookieyes banner -->
-    <script id="cookieyes" type="text/javascript" src="https://cdn-cookieyes.com/client_data/d9beb9a2380a2e10a0473995/script.js"></script>
-    <!-- End cookieyes banner -->
     <meta charset="UTF-8" />
     <script>
       window.dataLayer = window.dataLayer || [];
     </script>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-92L52BHCC7"></script>
     <script>
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
 
       gtag('config', 'G-92L52BHCC7');
     </script>
-    <!-- Google Tag Manager -->
     <script>
-      (function (w, d, s, l, i) {
-        w[l] = w[l] || [];
-        w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
-        var f = d.getElementsByTagName(s)[0],
-          j = d.createElement(s),
-          dl = l != 'dataLayer' ? '&l=' + l : '';
-        j.async = true;
-        j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
-        f.parentNode.insertBefore(j, f);
-      })(window, document, 'script', 'dataLayer', 'GTM-P96F9ZTN');
+      window.addEventListener('load', function () {
+        var runWhenIdle = window.requestIdleCallback || function (cb) { return setTimeout(cb, 1200); };
+        runWhenIdle(function () {
+          function loadScript(src, attrs) {
+            var s = document.createElement('script');
+            s.src = src;
+            s.async = true;
+            Object.keys(attrs || {}).forEach(function (key) { s.setAttribute(key, attrs[key]); });
+            document.head.appendChild(s);
+          }
+
+          loadScript('https://cdn-cookieyes.com/client_data/d9beb9a2380a2e10a0473995/script.js', {
+            id: 'cookieyes',
+            type: 'text/javascript'
+          });
+
+          loadScript('https://www.googletagmanager.com/gtag/js?id=G-92L52BHCC7');
+
+          (function (w, d, s, l, i) {
+            w[l] = w[l] || [];
+            w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+            var f = d.getElementsByTagName(s)[0],
+              j = d.createElement(s),
+              dl = l != 'dataLayer' ? '&l=' + l : '';
+            j.async = true;
+            j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+            f.parentNode.insertBefore(j, f);
+          })(window, document, 'script', 'dataLayer', 'GTM-P96F9ZTN');
+
+          loadScript('https://js-eu1.hs-scripts.com/143989272.js', {
+            id: 'hs-script-loader',
+            type: 'text/javascript'
+          });
+        });
+      });
     </script>
-    <!-- End Google Tag Manager -->
     <link rel="icon" type="image/png" href="/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#a855f7" />
@@ -57,7 +75,9 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=JetBrains+Mono:wght@400;500&display=swap" />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" /></noscript>
 
     <!-- Structured Data -->
     <script type="application/ld+json">
@@ -87,8 +107,5 @@
     <!-- End Google Tag Manager (noscript) -->
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
-    <!-- Start of HubSpot Embed Code -->
-    <script type="text/javascript" id="hs-script-loader" async defer src="//js-eu1.hs-scripts.com/143989272.js"></script>
-    <!-- End of HubSpot Embed Code -->
   </body>
 </html>

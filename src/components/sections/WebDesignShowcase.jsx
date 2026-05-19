@@ -139,8 +139,16 @@ function RoadFeaturedCard({ project, index, total, progress, vw, t, language, is
             isMobilePerf
               // Mobile: plain img tag — no motion wrapper = no extra layer
               ? <img src={cover} alt={`${copy.title} preview`}
+                width={Math.round(width)}
+                height={Math.round(height * 0.57)}
+                loading="lazy"
+                decoding="async"
                 className="absolute inset-0 h-full w-full object-cover object-center" />
               : <motion.img src={cover} alt={`${copy.title} preview`}
+                width={Math.round(width)}
+                height={Math.round(height * 0.57)}
+                loading="lazy"
+                decoding="async"
                 className="absolute inset-0 h-full w-full object-cover object-center"
                 style={{ scale: imgSc }} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }} />
           )}
